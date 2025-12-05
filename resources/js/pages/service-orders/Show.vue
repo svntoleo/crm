@@ -4,13 +4,14 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import type { ServiceOrder } from '@/types/models';
 
 const page = usePage();
-const props = defineProps({ serviceOrder: Object });
+const props = defineProps<{ serviceOrder: ServiceOrder }>();
 
 const canEdit = () => {
-  const user = page.props.auth.user;
-  if (user.role === 'customer') {
+  const user = (page.props.auth?.user as any) || null;
+  if (user?.role === 'customer') {
     return props.serviceOrder.customer_id === user.id;
   }
   return true;

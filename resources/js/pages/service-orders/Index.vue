@@ -17,25 +17,10 @@ import {
 } from '@/components/ui/alert-dialog';
 import KanbanBoard from '@/components/KanbanBoard.vue';
 import { ref } from 'vue';
+import type { ServiceOrdersIndexPageProps } from '@/types/models';
 
-interface Stage {
-  id: number;
-  label: string;
-}
-
-interface ServiceOrder {
-  id: number;
-  number?: string;
-  title: string;
-  total: number;
-  customer?: { name: string };
-  stage?: Stage;
-}
-
-const page = usePage<{
-  service_orders: { data: ServiceOrder[] };
-  stages: Stage[];
-}>();
+const page = usePage();
+const pageProps = page.props as unknown as ServiceOrdersIndexPageProps;
 const showKanban = ref(true);
 
 const handleMove = async (moves: Array<{ id: number; stage_id: number; position: number }>) => {
@@ -83,8 +68,8 @@ const deleteServiceOrder = (serviceOrderId: number) => {
 
       <KanbanBoard 
         v-if="showKanban"
-        :documents="page.props.service_orders.data"
-        :stages="page.props.stages"
+        :documents="pageProps.service_orders.data"
+        :stages="pageProps.stages"
         :on-move="handleMove"
         :on-card-click="handleCardClick"
       />
@@ -106,7 +91,7 @@ const deleteServiceOrder = (serviceOrderId: number) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="o in page.props.service_orders.data" :key="o.id">
+              <TableRow v-for="o in pageProps.service_orders.data" :key="o.id">
                 <TableCell>{{ o.number ?? `#${o.id}` }}</TableCell>
                 <TableCell>{{ o.title || '—' }}</TableCell>
                 <TableCell>{{ o.customer?.name ?? '—' }}</TableCell>

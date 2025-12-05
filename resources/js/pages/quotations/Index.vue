@@ -17,25 +17,10 @@ import {
 } from '@/components/ui/alert-dialog';
 import KanbanBoard from '@/components/KanbanBoard.vue';
 import { ref } from 'vue';
+import type { QuotationsIndexPageProps } from '@/types/models';
 
-interface Stage {
-  id: number;
-  label: string;
-}
-
-interface Quotation {
-  id: number;
-  number?: string;
-  title: string;
-  total: number;
-  customer?: { name: string };
-  stage?: Stage;
-}
-
-const page = usePage<{
-  quotations: { data: Quotation[] };
-  stages: Stage[];
-}>();
+const page = usePage();
+const pageProps = page.props as unknown as QuotationsIndexPageProps;
 const showKanban = ref(true);
 
 const handleMove = async (moves: Array<{ id: number; stage_id: number; position: number }>) => {
@@ -81,10 +66,10 @@ const deleteQuotation = (quotationId: number) => {
         </div>
       </div>
 
-      <KanbanBoard 
-        v-if="showKanban"
-        :documents="page.props.quotations.data"
-        :stages="page.props.stages || []"
+        <KanbanBoard 
+          v-if="showKanban"
+          :documents="pageProps.quotations.data"
+          :stages="pageProps.stages || []"
         :on-move="handleMove"
         :on-card-click="handleCardClick"
       />
@@ -106,7 +91,7 @@ const deleteQuotation = (quotationId: number) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="q in page.props.quotations.data" :key="q.id">
+              <TableRow v-for="q in pageProps.quotations.data" :key="q.id">
                 <TableCell>{{ q.number ?? `#${q.id}` }}</TableCell>
                 <TableCell>{{ q.title || '—' }}</TableCell>
                 <TableCell>{{ q.customer?.name ?? '—' }}</TableCell>

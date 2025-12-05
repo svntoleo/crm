@@ -2,22 +2,7 @@
 import { ref, watch } from 'vue';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { VueDraggable } from 'vue-draggable-plus';
-
-interface Document {
-  id: number;
-  title: string;
-  number?: string;
-  customer?: { name: string };
-  stage_id: number;
-  position: number;
-  total: number;
-}
-
-interface Stage {
-  id: number;
-  label: string;
-  order: number;
-}
+import type { Document, Stage } from '@/types/models';
 
 interface Props {
   documents: Document[];

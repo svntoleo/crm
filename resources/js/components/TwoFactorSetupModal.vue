@@ -264,10 +264,7 @@ watch(
                                     </PinInputGroup>
                                 </PinInput>
                                 <InputError
-                                    :message="
-                                        errors?.confirmTwoFactorAuthentication
-                                            ?.code
-                                    "
+                                    :message="errors?.confirmTwoFactorAuthentication?.[0] ?? errors?.confirmTwoFactorAuthentication"
                                 />
                             </div>
 
