@@ -1,0 +1,136 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreQuotationItemRequest;
+use App\Http\Requests\StoreQuotationRequest;
+use App\Http\Requests\UpdateQuotationItemRequest;
+use App\Http\Requests\UpdateQuotationRequest;
+use App\Models\Quotation;
+use App\Models\QuotationItem;
+use App\Models\QuotationsStage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
+
+class QuotationWebController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Quotation::with('stage', 'customer')->orderBy('stage_id')->orderBy('position');
+        
+        if ($request->user()->isCustomer()) {
+            $query->where('customer_id', $request->user()->id);
+        }
+        
+        $quotations = $query->paginate(50)->withQueryString();
+        $stages = QuotationsStage::orderBy('order')->get();
+        
+        return Inertia::render('quotations/Index', [
+            'quotations' => $quotations,
+            'stages' => $stages,
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('quotations/Form', [
+            'quotation' => null,
+        ]);
+    }
+
+    public function store(StoreQuotationRequest $request)
+    {
+        $data = $request->validated();
+        $data['user_id'] = $request->user()->id;
+
+        $quotation = Quotation::create($data);
+
+        return redirect()->route('quotations.edit', $quotation)
+            ->with('success', 'Quotation created successfully.');
+    }
+
+    public function edit(Quotation $quotation)
+    {
+        $this->authorize('update', $quotation);
+        
+        $quotation->load('items', 'customer', 'stage');
+        return Inertia::render('quotations/Form', [
+            'quotation' => $quotation,
+        ]);
+    }
+
+    public function update(UpdateQuotationRequest $request, Quotation $quotation)
+    {
+        $quotation->update($request->validated());
+
+        return redirect()->route('quotations.edit', $quotation)
+            ->with('success', 'Quotation updated successfully.');
+    }
+
+    public function destroy(Request $request, Quotation $quotation)
+    {
+        $this->authorize('delete', $quotation);
+        
+        $quotation->delete();
+
+        return redirect()->route('quotations.index')
+            ->with('success', 'Quotation deleted successfully.');
+    }
+
+    public function show(Quotation $quotation)
+    {
+        $this->authorize('view', $quotation);
+        
+        $quotation->load('items', 'customer', 'stage');
+        return Inertia::render('quotations/Show', [
+            'quotation' => $quotation,
+        ]);
+    }
+
+    public function move(Request $request)
+    {
+        $payload = $request->validate([
+            'moves' => 'required|array',
+            'moves.*.id' => 'required|integer|exists:quotations,id',
+            'moves.*.stage_id' => 'required|integer|exists:quotations_stages,id',
+            'moves.*.position' => 'required|integer',
+        ]);
+
+        DB::transaction(function () use ($payload, $request) {
+            foreach ($payload['moves'] as $m) {
+                $quotation = Quotation::find($m['id']);
+                $this->authorize('update', $quotation);
+                $quotation->update([
+                    'stage_id' => $m['stage_id'],
+                    'position' => $m['position'],
+                ]);
+            }
+        });
+
+        return response()->json(['success' => true, 'message' => 'Quotation moved successfully.']);
+    }
+
+    public function storeItem(StoreQuotationItemRequest $request, Quotation $quotation)
+    {
+        $quotation->items()->create($request->validated());
+
+        return back()->with('success', 'Item added successfully.');
+    }
+
+    public function updateItem(UpdateQuotationItemRequest $request, Quotation $quotation, QuotationItem $item)
+    {
+        $item->update($request->validated());
+
+        return back()->with('success', 'Item updated successfully.');
+    }
+
+    public function destroyItem(Request $request, Quotation $quotation, QuotationItem $item)
+    {
+        $this->authorize('update', $quotation);
+        
+        $item->delete();
+
+        return back()->with('success', 'Item deleted successfully.');
+    }
+}
