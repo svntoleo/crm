@@ -11,7 +11,18 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->paginate(50)->withQueryString();
+        $products = Product::with('category')->paginate(50)->withQueryString()->through(fn($product) => [
+            'id' => $product->id,
+            'sku' => $product->sku,
+            'label' => $product->label,
+            'description' => $product->description,
+            'price' => $product->price,
+            'category' => $product->category,
+            'urls' => [
+                'edit' => route('products.edit', $product),
+                'destroy' => route('products.destroy', $product),
+            ],
+        ]);
         $categories = ProductCategory::orderBy('label')->get();
 
         return Inertia::render('products/Index', [
@@ -19,9 +30,9 @@ class ProductController extends Controller
             'categories' => $categories,
             'urls' => [
                 'create' => route('products.create'),
-                'store' => route('products.store'),
-            ],
-        ]);
+                'store' => route('products.store')
+            ]
+            ]);
     }
 
     public function create()
@@ -33,9 +44,9 @@ class ProductController extends Controller
             'categories' => $categories,
             'urls' => [
                 'store' => route('products.store'),
-                'index' => route('products.index'),
-            ],
-        ]);
+                'index' => route('products.index')
+            ]
+            ]);
     }
 
     public function store(Request $request)
@@ -45,8 +56,8 @@ class ProductController extends Controller
             'sku' => 'required|string|unique:products,sku',
             'description' => 'nullable|string',
             'category_id' => 'required|exists:product_categories,id',
-            'price' => 'required|numeric|min:0',
-        ]);
+            'price' => 'required|numeric|min:0'
+            ]);
 
         Product::create($validated);
 
@@ -62,9 +73,9 @@ class ProductController extends Controller
             'categories' => $categories,
             'urls' => [
                 'update' => route('products.update', $product),
-                'index' => route('products.index'),
-            ],
-        ]);
+                'index' => route('products.index')
+            ]
+            ]);
     }
 
     public function update(Request $request, Product $product)
@@ -74,8 +85,8 @@ class ProductController extends Controller
             'sku' => 'required|string|unique:products,sku,'.$product->id,
             'description' => 'nullable|string',
             'category_id' => 'required|exists:product_categories,id',
-            'price' => 'required|numeric|min:0',
-        ]);
+            'price' => 'required|numeric|min:0'
+            ]);
 
         $product->update($validated);
 

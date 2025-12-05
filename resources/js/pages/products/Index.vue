@@ -85,7 +85,7 @@ const deleteProduct = (productId: number) => {
                 <TableCell>R$ {{ product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}</TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Link :href="props.urls.edit(product.id)">
+                    <Link :href="product.urls.edit">
                       <Button variant="outline" size="sm">Edit</Button>
                     </Link>
                     <AlertDialog>

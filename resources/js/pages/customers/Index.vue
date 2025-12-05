@@ -61,10 +61,10 @@ const props = withDefaults(defineProps<Props>(), {});
                 <TableCell>{{ customer.profile?.city ?? '—' }}</TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Link :href="props.urls.show(customer.id)">
+                    <Link :href="customer.urls.show">
                       <Button variant="outline" size="sm">View</Button>
                     </Link>
-                    <Link :href="props.urls.edit(customer.id)">
+                    <Link :href="customer.urls.edit">
                       <Button variant="outline" size="sm">Edit</Button>
                     </Link>
                   </div>

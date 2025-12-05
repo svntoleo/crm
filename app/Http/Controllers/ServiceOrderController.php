@@ -23,7 +23,7 @@ class ServiceOrderController extends Controller
             $query->where('customer_id', $request->user()->id);
         }
         
-        $orders = $query->paginate(50)->withQueryString();
+        $orders = $query->paginate(50)->withQueryString()->through(fn($item) => array_merge($item->toArray(), ['urls' => ['show' => route('service_orders.show', $item), 'edit' => route('service_orders.edit', $item), 'destroy' => route('service_orders.destroy', $item)]]));
         $stages = ServiceOrdersStage::orderBy('order')->get();
         
         return Inertia::render('service-orders/Index', [

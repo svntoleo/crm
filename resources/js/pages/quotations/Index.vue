@@ -107,10 +107,10 @@ const deleteQuotation = (quotationId: number) => {
                 <TableCell>R$ {{ Number(q.total).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}</TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Link :href="pageProps.urls.show(q.id)">
+                    <Link :href="q.urls.show">
                       <Button variant="outline" size="sm">View</Button>
                     </Link>
-                    <Link :href="pageProps.urls.edit(q.id)">
+                    <Link :href="q.urls.edit">
                       <Button variant="outline" size="sm">Edit</Button>
                     </Link>
                     <AlertDialog>

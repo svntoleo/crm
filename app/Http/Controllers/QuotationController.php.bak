@@ -23,7 +23,7 @@ class QuotationController extends Controller
             $query->where('customer_id', $request->user()->id);
         }
         
-        $quotations = $query->paginate(50)->withQueryString()->through(fn($item) => array_merge($item->toArray(), ['urls' => ['show' => route('quotations.show', $item), 'edit' => route('quotations.edit', $item), 'destroy' => route('quotations.destroy', $item)]]));
+        $quotations = $query->paginate(50)->withQueryString();
         $stages = QuotationsStage::orderBy('order')->get();
         
         return Inertia::render('quotations/Index', [
@@ -32,12 +32,9 @@ class QuotationController extends Controller
             'urls' => [
                 'create' => route('quotations.create'),
                 'store' => route('quotations.store'),
-                'move' => route('quotations.move'),
-                'show' => fn($id) => route('quotations.show', $id),
-                'edit' => fn($id) => route('quotations.edit', $id),
-                'destroy' => fn($id) => route('quotations.destroy', $id),
-            ],
-        ]);
+                'move' => route('quotations.move')
+            ]
+            ]);
     }
 
     public function create()
@@ -47,9 +44,9 @@ class QuotationController extends Controller
             'urls' => [
                 'store' => route('quotations.store'),
                 'index' => route('quotations.index'),
-                'storeItem' => fn($id) => route('quotations.items.store', $id),
-            ],
-        ]);
+                'storeItem' => fn($id) => route('quotations.items.store', $id)
+            ]
+            ]);
     }
 
     public function store(StoreQuotationRequest $request)
@@ -74,9 +71,9 @@ class QuotationController extends Controller
                 'update' => route('quotations.update', $quotation),
                 'index' => route('quotations.index'),
                 'storeItem' => route('quotations.items.store', $quotation),
-                'destroyItem' => fn($itemId) => route('quotations.items.destroy', [$quotation->id, $itemId]),
-            ],
-        ]);
+                'destroyItem' => fn($itemId) => route('quotations.items.destroy', [$quotation->id, $itemId])
+            ]
+            ]);
     }
 
     public function update(UpdateQuotationRequest $request, Quotation $quotation)
@@ -106,9 +103,9 @@ class QuotationController extends Controller
             'quotation' => $quotation,
             'urls' => [
                 'edit' => route('quotations.edit', $quotation),
-                'index' => route('quotations.index'),
-            ],
-        ]);
+                'index' => route('quotations.index')
+            ]
+            ]);
     }
 
     public function move(Request $request)
@@ -117,8 +114,8 @@ class QuotationController extends Controller
             'moves' => 'required|array',
             'moves.*.id' => 'required|integer|exists:quotations,id',
             'moves.*.stage_id' => 'required|integer|exists:quotations_stages,id',
-            'moves.*.position' => 'required|integer',
-        ]);
+            'moves.*.position' => 'required|integer'
+            ]);
 
         DB::transaction(function () use ($payload, $request) {
             foreach ($payload['moves'] as $m) {
@@ -126,8 +123,8 @@ class QuotationController extends Controller
                 $this->authorize('update', $quotation);
                 $quotation->update([
                     'stage_id' => $m['stage_id'],
-                    'position' => $m['position'],
-                ]);
+                    'position' => $m['position']
+            ]);
             }
         });
 

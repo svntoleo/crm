@@ -13,15 +13,23 @@ class CustomerController extends Controller
         $customers = User::where('role', 'customer')
             ->with('profile')
             ->paginate(50)
-            ->withQueryString();
+            ->withQueryString()->through(fn($customer) => [
+                'id' => $customer->id,
+                'name' => $customer->name,
+                'email' => $customer->email,
+                'role' => $customer->role,
+                'profile' => $customer->profile,
+                'urls' => [
+                    'show' => route('customers.show', $customer),
+                    'edit' => route('customers.edit', $customer),
+                ],
+            ]);
 
         return Inertia::render('customers/Index', [
             'customers' => $customers,
             'urls' => [
-                'show' => fn($id) => route('customers.show', $id),
-                'edit' => fn($id) => route('customers.edit', $id),
-            ],
-        ]);
+                ]
+            ]);
     }
 
     public function show(User $customer)
@@ -36,9 +44,9 @@ class CustomerController extends Controller
             'customer' => $customer,
             'urls' => [
                 'edit' => route('customers.edit', $customer),
-                'index' => route('customers.index'),
-            ],
-        ]);
+                'index' => route('customers.index')
+            ]
+            ]);
     }
 
     public function edit(User $customer)
@@ -53,9 +61,9 @@ class CustomerController extends Controller
             'customer' => $customer,
             'urls' => [
                 'update' => route('customers.update', $customer),
-                'show' => route('customers.show', $customer),
-            ],
-        ]);
+                'show' => route('customers.show', $customer)
+            ]
+            ]);
     }
 
     public function update(Request $request, User $customer)
@@ -73,8 +81,8 @@ class CustomerController extends Controller
             'address' => 'nullable|string',
             'city' => 'nullable|string|max:100',
             'country' => 'nullable|string|max:100',
-            'cnpj' => 'nullable|string|max:20',
-        ]);
+            'cnpj' => 'nullable|string|max:20'
+            ]);
 
         $customer->update($validated);
 
@@ -86,7 +94,7 @@ class CustomerController extends Controller
                 'address' => $validated['address'] ?? null,
                 'city' => $validated['city'] ?? null,
                 'country' => $validated['country'] ?? null,
-                'cnpj' => $validated['cnpj'] ?? null,
+                'cnpj' => $validated['cnpj'] ?? null
             ]);
         }
 

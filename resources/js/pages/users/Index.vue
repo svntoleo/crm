@@ -110,7 +110,7 @@ const getRoleBadgeVariant = (role: string) => {
                                 </TableCell>
                                 <TableCell class="text-right space-x-2">
                                     <Button variant="outline" size="sm" as-child>
-                                        <Link :href="props.urls.edit(user.id)">Edit</Link>
+                                        <Link :href="user.urls.edit">Edit</Link>
                                     </Button>
                                     <AlertDialog>
                                         <AlertDialogTrigger as-child>

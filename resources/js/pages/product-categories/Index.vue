@@ -75,7 +75,7 @@ const deleteCategory = (categoryId: number) => {
                 <TableCell>{{ category.products_count }}</TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Link :href="props.urls.edit(category.id)">
+                    <Link :href="category.urls.edit">
                       <Button variant="outline" size="sm">Edit</Button>
                     </Link>
                     <AlertDialog>

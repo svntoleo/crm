@@ -107,10 +107,10 @@ const deleteServiceOrder = (serviceOrderId: number) => {
                 <TableCell>R$ {{ Number(o.total).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}</TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Link :href="pageProps.urls.show(o.id)">
+                    <Link :href="o.urls.show">
                       <Button variant="outline" size="sm">View</Button>
                     </Link>
-                    <Link :href="pageProps.urls.edit(o.id)">
+                    <Link :href="o.urls.edit">
                       <Button variant="outline" size="sm">Edit</Button>
                     </Link>
                     <AlertDialog>
