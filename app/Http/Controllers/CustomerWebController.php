@@ -17,6 +17,10 @@ class CustomerWebController extends Controller
 
         return Inertia::render('customers/Index', [
             'customers' => $customers,
+            'urls' => [
+                'show' => fn($id) => route('customers.show', $id),
+                'edit' => fn($id) => route('customers.edit', $id),
+            ],
         ]);
     }
 
@@ -30,6 +34,10 @@ class CustomerWebController extends Controller
 
         return Inertia::render('customers/Show', [
             'customer' => $customer,
+            'urls' => [
+                'edit' => route('customers.edit', $customer),
+                'index' => route('customers.index'),
+            ],
         ]);
     }
 
@@ -43,6 +51,10 @@ class CustomerWebController extends Controller
 
         return Inertia::render('customers/Form', [
             'customer' => $customer,
+            'urls' => [
+                'update' => route('customers.update', $customer),
+                'show' => route('customers.show', $customer),
+            ],
         ]);
     }
 

@@ -23,6 +23,10 @@ interface Customer {
 
 interface Props {
   customer: Customer;
+  urls: {
+    edit: string;
+    index: string;
+  };
 }
 
 withDefaults(defineProps<Props>(), {});
@@ -34,7 +38,7 @@ withDefaults(defineProps<Props>(), {});
     <div class="p-6 max-w-2xl">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">{{ customer.name }}</h1>
-        <Link :href="route('customers.edit', customer.id)">
+        <Link :href="urls.edit">
           <Button>Edit</Button>
         </Link>
       </div>
@@ -76,7 +80,7 @@ withDefaults(defineProps<Props>(), {});
           </div>
 
           <div class="mt-6">
-            <Link :href="route('customers.index')">
+            <Link :href="urls.index">
               <Button variant="outline">Back to Customers</Button>
             </Link>
           </div>

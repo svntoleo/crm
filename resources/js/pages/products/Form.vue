@@ -25,6 +25,11 @@ interface Product {
 interface Props {
   product?: Product;
   categories: Category[];
+  urls: {
+    store: string;
+    update: string;
+    index: string;
+  };
 }
 
 const props = defineProps<Props>();
@@ -39,12 +44,12 @@ const form = useForm({
 
 function submit() {
   if (props.product?.id) {
-    form.put(route('products.update', props.product.id), {
-      onSuccess: () => router.visit(route('products.index')),
+    form.put(props.urls.update, {
+      onSuccess: () => router.visit(props.urls.index),
     });
   } else {
-    form.post(route('products.store'), {
-      onSuccess: () => router.visit(route('products.index')),
+    form.post(props.urls.store, {
+      onSuccess: () => router.visit(props.urls.index),
     });
   }
 }
@@ -94,7 +99,7 @@ function submit() {
 
             <div class="flex gap-2 pt-4">
               <Button @click="submit">{{ props.product ? 'Update' : 'Create' }}</Button>
-              <Link :href="route('products.index')">
+              <Link :href="props.urls.index">
                 <Button variant="outline">Cancel</Button>
               </Link>
             </div>

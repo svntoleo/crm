@@ -13,8 +13,15 @@ interface User {
     role: 'admin' | 'sales' | 'customer';
 }
 
+interface Urls {
+    store: string;
+    update: string;
+    index: string;
+}
+
 interface Props {
     user?: User;
+    urls?: Urls;
 }
 
 const props = defineProps<Props>();
@@ -27,10 +34,10 @@ const form = useForm({
 });
 
 const submit = () => {
-    if (props.user) {
-        form.put(route('users.update', props.user.id));
-    } else {
-        form.post(route('users.store'));
+    if (props.user && props.urls?.update) {
+        form.put(props.urls.update);
+    } else if (props.urls?.store) {
+        form.post(props.urls.store);
     }
 };
 </script>
@@ -48,7 +55,7 @@ const submit = () => {
                     </p>
                 </div>
                 <Button variant="outline" as-child>
-                    <Link :href="route('users.index')">Back to Users</Link>
+                    <Link :href="props.urls?.index || '#'">Back to Users</Link>
                 </Button>
             </div>
 
@@ -121,7 +128,7 @@ const submit = () => {
 
                         <div class="flex justify-end space-x-2">
                             <Button variant="outline" type="button" as-child>
-                                <Link :href="route('users.index')">Cancel</Link>
+                                <Link :href="props.urls?.index || '#'">Cancel</Link>
                             </Button>
                             <Button type="submit" :disabled="form.processing">
                                 {{ user ? 'Update User' : 'Create User' }}

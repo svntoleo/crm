@@ -27,12 +27,18 @@ interface Props {
   categories: {
     data: Category[];
   };
+  urls: {
+    create: string;
+    store: string;
+    edit: (id: number) => string;
+    destroy: (id: number) => string;
+  };
 }
 
 const props = defineProps<Props>();
 
 const deleteCategory = (categoryId: number) => {
-  router.delete(route('product_categories.destroy', categoryId), {
+  router.delete(props.urls.destroy(categoryId), {
     onSuccess: () => router.reload(),
   });
 };
@@ -44,7 +50,7 @@ const deleteCategory = (categoryId: number) => {
     <div class="p-6">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Product Categories</h1>
-        <Link :href="route('product_categories.create')">
+        <Link :href="props.urls.create">
           <Button>New Category</Button>
         </Link>
       </div>
@@ -69,7 +75,7 @@ const deleteCategory = (categoryId: number) => {
                 <TableCell>{{ category.products_count }}</TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Link :href="route('product_categories.edit', category.id)">
+                    <Link :href="props.urls.edit(category.id)">
                       <Button variant="outline" size="sm">Edit</Button>
                     </Link>
                     <AlertDialog>

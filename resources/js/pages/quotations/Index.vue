@@ -20,22 +20,30 @@ import { ref } from 'vue';
 import type { QuotationsIndexPageProps } from '@/types/models';
 
 const page = usePage();
-const pageProps = page.props as unknown as QuotationsIndexPageProps;
+const pageProps = page.props as unknown as QuotationsIndexPageProps & {
+  urls: {
+    move: string;
+    create: string;
+    show: (id: number) => string;
+    edit: (id: number) => string;
+    destroy: (id: number) => string;
+  };
+};
 const showKanban = ref(true);
 
 const handleMove = async (moves: Array<{ id: number; stage_id: number; position: number }>) => {
-  router.post(route('quotations.move'), { moves }, {
+  router.post(pageProps.urls.move, { moves }, {
     preserveScroll: true,
     onSuccess: () => router.reload({ only: ['quotations'] }),
   });
 };
 
 const handleCardClick = (quotationId: number) => {
-  router.visit(route('quotations.edit', quotationId));
+  router.visit(pageProps.urls.edit(quotationId));
 };
 
 const deleteQuotation = (quotationId: number) => {
-  router.delete(route('quotations.destroy', quotationId), {
+  router.delete(pageProps.urls.destroy(quotationId), {
     onSuccess: () => router.reload(),
   });
 };
@@ -60,7 +68,7 @@ const deleteQuotation = (quotationId: number) => {
           >
             List
           </Button>
-          <Link :href="route('quotations.create')">
+          <Link :href="pageProps.urls.create">
             <Button>New Quotation</Button>
           </Link>
         </div>
@@ -99,10 +107,10 @@ const deleteQuotation = (quotationId: number) => {
                 <TableCell>R$ {{ Number(q.total).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}</TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Link :href="route('quotations.show', q.id)">
+                    <Link :href="pageProps.urls.show(q.id)">
                       <Button variant="outline" size="sm">View</Button>
                     </Link>
-                    <Link :href="route('quotations.edit', q.id)">
+                    <Link :href="pageProps.urls.edit(q.id)">
                       <Button variant="outline" size="sm">Edit</Button>
                     </Link>
                     <AlertDialog>

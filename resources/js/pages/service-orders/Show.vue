@@ -7,7 +7,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import type { ServiceOrder } from '@/types/models';
 
 const page = usePage();
-const props = defineProps<{ serviceOrder: ServiceOrder }>();
+const props = defineProps<{ 
+  serviceOrder: ServiceOrder;
+  urls: {
+    edit: string;
+    index: string;
+  };
+}>();
 
 const canEdit = () => {
   const user = (page.props.auth?.user as any) || null;
@@ -28,7 +34,7 @@ const canEdit = () => {
           <p class="text-gray-600">Customer: {{ props.serviceOrder.customer?.name ?? '—' }}</p>
         </div>
         <div v-if="canEdit()" class="flex gap-2">
-          <Link :href="route('service_orders.edit', props.serviceOrder.id)">
+          <Link :href="props.urls.edit">
             <Button>Edit</Button>
           </Link>
         </div>

@@ -26,6 +26,10 @@ interface Customer {
 
 interface Props {
   customer?: Customer;
+  urls: {
+    update: string;
+    show: string;
+  };
 }
 
 const props = defineProps<Props>();
@@ -44,8 +48,8 @@ const form = useForm({
 
 function submit() {
   if (props.customer?.id) {
-    form.put(route('customers.update', props.customer.id), {
-      onSuccess: () => router.visit(route('customers.index')),
+    form.put(props.urls.update, {
+      onSuccess: () => router.visit(props.urls.show),
     });
   }
 }
@@ -110,7 +114,7 @@ function submit() {
 
             <div class="flex gap-2 pt-4">
               <Button @click="submit">Update</Button>
-              <Link :href="route('customers.show', customer?.id || 0)">
+              <Link :href="props.urls.show">
                 <Button variant="outline">Cancel</Button>
               </Link>
             </div>

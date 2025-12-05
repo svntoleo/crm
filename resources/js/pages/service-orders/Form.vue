@@ -27,7 +27,16 @@ interface ServiceOrder {
   items?: ServiceOrderItem[];
 }
 
-const props = defineProps<{ serviceOrder?: ServiceOrder }>();
+interface Urls {
+  store: string;
+  update: string;
+  index: string;
+  show: string;
+  storeItem: string;
+  destroyItem: (itemId: number) => string;
+}
+
+const props = defineProps<{ serviceOrder?: ServiceOrder; urls?: Urls }>();
 const showItemForm = ref(false);
 const itemForm = useForm({
   description: '',
@@ -43,20 +52,20 @@ const form = useForm({
 });
 
 function submit() {
-  if (props.serviceOrder?.id) {
-    form.put(route('service_orders.update', props.serviceOrder.id), {
-      onSuccess: () => router.visit(route('service_orders.show', props.serviceOrder!.id)),
+  if (props.serviceOrder?.id && props.urls?.update) {
+    form.put(props.urls.update, {
+      onSuccess: () => router.visit(props.urls!.show),
     });
-  } else {
-    form.post(route('service_orders.store'), {
-      onSuccess: () => router.visit(route('service_orders.index')),
+  } else if (props.urls?.store) {
+    form.post(props.urls.store, {
+      onSuccess: () => router.visit(props.urls!.index),
     });
   }
 }
 
 function addItem() {
-  if (!props.serviceOrder?.id) return;
-  itemForm.post(route('service_orders.items.store', props.serviceOrder.id), {
+  if (!props.serviceOrder?.id || !props.urls?.storeItem) return;
+  itemForm.post(props.urls.storeItem, {
     onSuccess: () => {
       itemForm.reset();
       showItemForm.value = false;
@@ -66,8 +75,8 @@ function addItem() {
 }
 
 function deleteItem(itemId: number) {
-  if (!props.serviceOrder?.id) return;
-  itemForm.delete(route('service_orders.items.destroy', [props.serviceOrder.id, itemId]), {
+  if (!props.serviceOrder?.id || !props.urls?.destroyItem) return;
+  itemForm.delete(props.urls.destroyItem(itemId), {
     onSuccess: () => router.reload({ only: ['serviceOrder'] }),
   });
 }
@@ -102,7 +111,7 @@ function deleteItem(itemId: number) {
 
             <div class="flex gap-2">
               <Button @click="submit">Save</Button>
-              <Link :href="route('service_orders.index')">
+              <Link :href="props.urls?.index || '#'">
                 <Button variant="outline">Cancel</Button>
               </Link>
             </div>

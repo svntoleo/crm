@@ -7,7 +7,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import type { Quotation } from '@/types/models';
 
 const page = usePage();
-const props = defineProps<{ quotation: Quotation }>();
+const props = defineProps<{ 
+  quotation: Quotation;
+  urls: {
+    edit: string;
+    index: string;
+  };
+}>();
 
 const canEdit = () => {
   const user = (page.props.auth?.user as any) || null;
@@ -28,7 +34,7 @@ const canEdit = () => {
           <p class="text-gray-600">Customer: {{ props.quotation.customer?.name ?? '—' }}</p>
         </div>
         <div v-if="canEdit()" class="flex gap-2">
-          <Link :href="route('quotations.edit', props.quotation.id)">
+          <Link :href="props.urls.edit">
             <Button>Edit</Button>
           </Link>
         </div>

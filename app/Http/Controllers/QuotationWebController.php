@@ -29,6 +29,14 @@ class QuotationWebController extends Controller
         return Inertia::render('quotations/Index', [
             'quotations' => $quotations,
             'stages' => $stages,
+            'urls' => [
+                'create' => route('quotations.create'),
+                'store' => route('quotations.store'),
+                'move' => route('quotations.move'),
+                'show' => fn($id) => route('quotations.show', $id),
+                'edit' => fn($id) => route('quotations.edit', $id),
+                'destroy' => fn($id) => route('quotations.destroy', $id),
+            ],
         ]);
     }
 
@@ -36,6 +44,11 @@ class QuotationWebController extends Controller
     {
         return Inertia::render('quotations/Form', [
             'quotation' => null,
+            'urls' => [
+                'store' => route('quotations.store'),
+                'index' => route('quotations.index'),
+                'storeItem' => fn($id) => route('quotations.items.store', $id),
+            ],
         ]);
     }
 
@@ -57,6 +70,12 @@ class QuotationWebController extends Controller
         $quotation->load('items', 'customer', 'stage');
         return Inertia::render('quotations/Form', [
             'quotation' => $quotation,
+            'urls' => [
+                'update' => route('quotations.update', $quotation),
+                'index' => route('quotations.index'),
+                'storeItem' => route('quotations.items.store', $quotation),
+                'destroyItem' => fn($itemId) => route('quotations.items.destroy', [$quotation->id, $itemId]),
+            ],
         ]);
     }
 
@@ -85,6 +104,10 @@ class QuotationWebController extends Controller
         $quotation->load('items', 'customer', 'stage');
         return Inertia::render('quotations/Show', [
             'quotation' => $quotation,
+            'urls' => [
+                'edit' => route('quotations.edit', $quotation),
+                'index' => route('quotations.index'),
+            ],
         ]);
     }
 

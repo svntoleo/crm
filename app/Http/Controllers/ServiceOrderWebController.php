@@ -27,8 +27,16 @@ class ServiceOrderWebController extends Controller
         $stages = ServiceOrdersStage::orderBy('order')->get();
         
         return Inertia::render('service-orders/Index', [
-            'serviceOrders' => $orders,
+            'service_orders' => $orders,
             'stages' => $stages,
+            'urls' => [
+                'create' => route('service_orders.create'),
+                'store' => route('service_orders.store'),
+                'move' => route('service_orders.move'),
+                'show' => fn($id) => route('service_orders.show', $id),
+                'edit' => fn($id) => route('service_orders.edit', $id),
+                'destroy' => fn($id) => route('service_orders.destroy', $id),
+            ],
         ]);
     }
 
@@ -36,6 +44,11 @@ class ServiceOrderWebController extends Controller
     {
         return Inertia::render('service-orders/Form', [
             'serviceOrder' => null,
+            'urls' => [
+                'store' => route('service_orders.store'),
+                'index' => route('service_orders.index'),
+                'storeItem' => fn($id) => route('service_orders.items.store', $id),
+            ],
         ]);
     }
 
@@ -57,6 +70,12 @@ class ServiceOrderWebController extends Controller
         $serviceOrder->load('items', 'customer', 'stage');
         return Inertia::render('service-orders/Form', [
             'serviceOrder' => $serviceOrder,
+            'urls' => [
+                'update' => route('service_orders.update', $serviceOrder),
+                'index' => route('service_orders.index'),
+                'storeItem' => route('service_orders.items.store', $serviceOrder),
+                'destroyItem' => fn($itemId) => route('service_orders.items.destroy', [$serviceOrder->id, $itemId]),
+            ],
         ]);
     }
 
@@ -85,6 +104,10 @@ class ServiceOrderWebController extends Controller
         $serviceOrder->load('items', 'customer', 'stage');
         return Inertia::render('service-orders/Show', [
             'serviceOrder' => $serviceOrder,
+            'urls' => [
+                'edit' => route('service_orders.edit', $serviceOrder),
+                'index' => route('service_orders.index'),
+            ],
         ]);
     }
 

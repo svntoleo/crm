@@ -20,22 +20,30 @@ import { ref } from 'vue';
 import type { ServiceOrdersIndexPageProps } from '@/types/models';
 
 const page = usePage();
-const pageProps = page.props as unknown as ServiceOrdersIndexPageProps;
+const pageProps = page.props as unknown as ServiceOrdersIndexPageProps & {
+  urls: {
+    move: string;
+    create: string;
+    show: (id: number) => string;
+    edit: (id: number) => string;
+    destroy: (id: number) => string;
+  };
+};
 const showKanban = ref(true);
 
 const handleMove = async (moves: Array<{ id: number; stage_id: number; position: number }>) => {
-  router.post(route('service_orders.move'), { moves }, {
+  router.post(pageProps.urls.move, { moves }, {
     preserveScroll: true,
     onSuccess: () => router.reload({ only: ['service_orders'] }),
   });
 };
 
 const handleCardClick = (serviceOrderId: number) => {
-  router.visit(route('service_orders.edit', serviceOrderId));
+  router.visit(pageProps.urls.edit(serviceOrderId));
 };
 
 const deleteServiceOrder = (serviceOrderId: number) => {
-  router.delete(route('service_orders.destroy', serviceOrderId), {
+  router.delete(pageProps.urls.destroy(serviceOrderId), {
     onSuccess: () => router.reload(),
   });
 };
@@ -60,7 +68,7 @@ const deleteServiceOrder = (serviceOrderId: number) => {
           >
             List
           </Button>
-          <Link :href="route('service_orders.create')">
+          <Link :href="pageProps.urls.create">
             <Button>New Service Order</Button>
           </Link>
         </div>
@@ -99,10 +107,10 @@ const deleteServiceOrder = (serviceOrderId: number) => {
                 <TableCell>R$ {{ Number(o.total).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}</TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Link :href="route('service_orders.show', o.id)">
+                    <Link :href="pageProps.urls.show(o.id)">
                       <Button variant="outline" size="sm">View</Button>
                     </Link>
-                    <Link :href="route('service_orders.edit', o.id)">
+                    <Link :href="pageProps.urls.edit(o.id)">
                       <Button variant="outline" size="sm">Edit</Button>
                     </Link>
                     <AlertDialog>

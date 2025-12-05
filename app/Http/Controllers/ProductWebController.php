@@ -17,6 +17,10 @@ class ProductWebController extends Controller
         return Inertia::render('products/Index', [
             'products' => $products,
             'categories' => $categories,
+            'urls' => [
+                'create' => route('products.create'),
+                'store' => route('products.store'),
+            ],
         ]);
     }
 
@@ -27,6 +31,10 @@ class ProductWebController extends Controller
         return Inertia::render('products/Form', [
             'product' => null,
             'categories' => $categories,
+            'urls' => [
+                'store' => route('products.store'),
+                'index' => route('products.index'),
+            ],
         ]);
     }
 
@@ -52,6 +60,10 @@ class ProductWebController extends Controller
         return Inertia::render('products/Form', [
             'product' => $product,
             'categories' => $categories,
+            'urls' => [
+                'update' => route('products.update', $product),
+                'index' => route('products.index'),
+            ],
         ]);
     }
 

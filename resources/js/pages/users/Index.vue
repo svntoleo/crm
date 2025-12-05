@@ -36,12 +36,18 @@ interface Props {
     users: {
         data: User[];
     };
+    urls: {
+        create: string;
+        store: string;
+        edit: (id: number) => string;
+        destroy: (id: number) => string;
+    };
 }
 
 const props = defineProps<Props>();
 
 const deleteUser = (userId: number) => {
-    router.delete(route('users.destroy', userId), {
+    router.delete(props.urls.destroy(userId), {
         onSuccess: () => router.reload(),
     });
 };
@@ -71,7 +77,7 @@ const getRoleBadgeVariant = (role: string) => {
                     <p class="text-muted-foreground">Manage system users and their roles</p>
                 </div>
                 <Button as-child>
-                    <Link :href="route('users.create')">New User</Link>
+                    <Link :href="props.urls.create">New User</Link>
                 </Button>
             </div>
 
@@ -104,7 +110,7 @@ const getRoleBadgeVariant = (role: string) => {
                                 </TableCell>
                                 <TableCell class="text-right space-x-2">
                                     <Button variant="outline" size="sm" as-child>
-                                        <Link :href="route('users.edit', user.id)">Edit</Link>
+                                        <Link :href="props.urls.edit(user.id)">Edit</Link>
                                     </Button>
                                     <AlertDialog>
                                         <AlertDialogTrigger as-child>

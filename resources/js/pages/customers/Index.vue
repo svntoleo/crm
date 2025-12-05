@@ -23,9 +23,13 @@ interface Props {
   customers: {
     data: Customer[];
   };
+  urls: {
+    show: (id: number) => string;
+    edit: (id: number) => string;
+  };
 }
 
-withDefaults(defineProps<Props>(), {});
+const props = withDefaults(defineProps<Props>(), {});
 </script>
 
 <template>
@@ -50,17 +54,17 @@ withDefaults(defineProps<Props>(), {});
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="customer in customers.data" :key="customer.id">
+              <TableRow v-for="customer in props.customers.data" :key="customer.id">
                 <TableCell>{{ customer.name }}</TableCell>
                 <TableCell>{{ customer.email }}</TableCell>
                 <TableCell>{{ customer.profile?.company_name ?? '—' }}</TableCell>
                 <TableCell>{{ customer.profile?.city ?? '—' }}</TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Link :href="route('customers.show', customer.id)">
+                    <Link :href="props.urls.show(customer.id)">
                       <Button variant="outline" size="sm">View</Button>
                     </Link>
-                    <Link :href="route('customers.edit', customer.id)">
+                    <Link :href="props.urls.edit(customer.id)">
                       <Button variant="outline" size="sm">Edit</Button>
                     </Link>
                   </div>

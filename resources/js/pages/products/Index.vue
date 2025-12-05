@@ -34,12 +34,18 @@ interface Props {
     data: Product[];
   };
   categories: Category[];
+  urls: {
+    create: string;
+    store: string;
+    edit: (id: number) => string;
+    destroy: (id: number) => string;
+  };
 }
 
 const props = withDefaults(defineProps<Props>(), {});
 
 const deleteProduct = (productId: number) => {
-  router.delete(route('products.destroy', productId), {
+  router.delete(props.urls.destroy(productId), {
     onSuccess: () => router.reload(),
   });
 };
@@ -51,7 +57,7 @@ const deleteProduct = (productId: number) => {
     <div class="p-6">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Products</h1>
-        <Link :href="route('products.create')">
+        <Link :href="props.urls.create">
           <Button>New Product</Button>
         </Link>
       </div>
@@ -79,7 +85,7 @@ const deleteProduct = (productId: number) => {
                 <TableCell>R$ {{ product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}</TableCell>
                 <TableCell>
                   <div class="flex gap-2">
-                    <Link :href="route('products.edit', product.id)">
+                    <Link :href="props.urls.edit(product.id)">
                       <Button variant="outline" size="sm">Edit</Button>
                     </Link>
                     <AlertDialog>

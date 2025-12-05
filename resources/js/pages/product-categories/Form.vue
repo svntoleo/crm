@@ -11,8 +11,15 @@ interface Category {
   label: string;
 }
 
+interface Urls {
+  store: string;
+  update: string;
+  index: string;
+}
+
 interface Props {
   category?: Category;
+  urls?: Urls;
 }
 
 const props = defineProps<Props>();
@@ -22,10 +29,10 @@ const form = useForm({
 });
 
 const submit = () => {
-  if (props.category) {
-    form.put(route('product_categories.update', props.category.id));
-  } else {
-    form.post(route('product_categories.store'));
+  if (props.category && props.urls?.update) {
+    form.put(props.urls.update);
+  } else if (props.urls?.store) {
+    form.post(props.urls.store);
   }
 };
 </script>
@@ -42,7 +49,7 @@ const submit = () => {
           </p>
         </div>
         <Button variant="outline" as-child>
-          <Link :href="route('product_categories.index')">Back to Categories</Link>
+          <Link :href="props.urls?.index || '#'">Back to Categories</Link>
         </Button>
       </div>
 
@@ -67,7 +74,7 @@ const submit = () => {
 
             <div class="flex justify-end space-x-2">
               <Button variant="outline" type="button" as-child>
-                <Link :href="route('product_categories.index')">Cancel</Link>
+                <Link :href="props.urls?.index || '#'">Cancel</Link>
               </Button>
               <Button type="submit" :disabled="form.processing">
                 {{ category ? 'Update Category' : 'Create Category' }}

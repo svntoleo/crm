@@ -26,7 +26,16 @@ interface Quotation {
   items?: QuotationItem[];
 }
 
-const props = defineProps<{ quotation?: Quotation }>();
+interface Urls {
+  store: string;
+  update: string;
+  index: string;
+  show: string;
+  storeItem: string;
+  destroyItem: (itemId: number) => string;
+}
+
+const props = defineProps<{ quotation?: Quotation; urls?: Urls }>();
 const showItemForm = ref(false);
 const itemForm = useForm({
   description: '',
@@ -41,20 +50,20 @@ const form = useForm({
 });
 
 function submit() {
-  if (props.quotation?.id) {
-    form.put(route('quotations.update', props.quotation.id), {
-      onSuccess: () => router.visit(route('quotations.show', props.quotation!.id)),
+  if (props.quotation?.id && props.urls?.update) {
+    form.put(props.urls.update, {
+      onSuccess: () => router.visit(props.urls!.show),
     });
-  } else {
-    form.post(route('quotations.store'), {
-      onSuccess: () => router.visit(route('quotations.index')),
+  } else if (props.urls?.store) {
+    form.post(props.urls.store, {
+      onSuccess: () => router.visit(props.urls!.index),
     });
   }
 }
 
 function addItem() {
-  if (!props.quotation?.id) return;
-  itemForm.post(route('quotations.items.store', props.quotation.id), {
+  if (!props.quotation?.id || !props.urls?.storeItem) return;
+  itemForm.post(props.urls.storeItem, {
     onSuccess: () => {
       itemForm.reset();
       showItemForm.value = false;
@@ -64,8 +73,8 @@ function addItem() {
 }
 
 function deleteItem(itemId: number) {
-  if (!props.quotation?.id) return;
-  itemForm.delete(route('quotations.items.destroy', [props.quotation.id, itemId]), {
+  if (!props.quotation?.id || !props.urls?.destroyItem) return;
+  itemForm.delete(props.urls.destroyItem(itemId), {
     onSuccess: () => router.reload({ only: ['quotation'] }),
   });
 }
@@ -95,7 +104,7 @@ function deleteItem(itemId: number) {
 
             <div class="flex gap-2">
               <Button @click="submit">Save</Button>
-              <Link :href="route('quotations.index')">
+              <Link :href="props.urls?.index || '#'">
                 <Button variant="outline">Cancel</Button>
               </Link>
             </div>

@@ -15,6 +15,12 @@ class UserWebController extends Controller
 
         return Inertia::render('users/Index', [
             'users' => $users,
+            'urls' => [
+                'create' => route('users.create'),
+                'store' => route('users.store'),
+                'edit' => fn($id) => route('users.edit', $id),
+                'destroy' => fn($id) => route('users.destroy', $id),
+            ],
         ]);
     }
 
@@ -22,6 +28,10 @@ class UserWebController extends Controller
     {
         return Inertia::render('users/Form', [
             'user' => null,
+            'urls' => [
+                'store' => route('users.store'),
+                'index' => route('users.index'),
+            ],
         ]);
     }
 
@@ -45,6 +55,10 @@ class UserWebController extends Controller
     {
         return Inertia::render('users/Form', [
             'user' => $user,
+            'urls' => [
+                'update' => route('users.update', $user),
+                'index' => route('users.index'),
+            ],
         ]);
     }
 
