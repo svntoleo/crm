@@ -6,7 +6,7 @@ use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class ProductCategoryWebController extends Controller
+class ProductCategoryController extends Controller
 {
     public function index()
     {

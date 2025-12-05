@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-class UserWebController extends Controller
+class UserController extends Controller
 {
     public function index()
     {

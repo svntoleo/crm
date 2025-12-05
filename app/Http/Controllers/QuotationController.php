@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class QuotationWebController extends Controller
+class QuotationController extends Controller
 {
     public function index(Request $request)
     {
