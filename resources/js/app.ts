@@ -27,3 +27,35 @@ createInertiaApp({
 
 // This will set light / dark mode on page load...
 initializeTheme();
+
+// Ensure a safe runtime `route()` helper exists to avoid console errors
+// when Ziggy's route function or route definitions are not present.
+(function ensureRoute() {
+    const w = window as any;
+    if (typeof w.route !== 'function') {
+        w.route = (name: string, params?: any) => {
+            try {
+                // If Ziggy's route function is available, delegate to it
+                if (typeof (w.Ziggy) !== 'undefined' && typeof (w.route) === 'function') {
+                    return (w.route as any)(name, params);
+                }
+            } catch (e) {
+                // swallow and fallback
+            }
+
+            // Fallback strategy: convert dot-notated route name to a path
+            // e.g. 'customers.show' -> '/customers/show/ID' (best-effort)
+            let path = '/' + String(name).replace(/\./g, '/');
+            if (params !== undefined && params !== null) {
+                if (typeof params === 'object') {
+                    const id = params.id ?? Object.values(params).find((v: any) => typeof v === 'number' || typeof v === 'string');
+                    if (id !== undefined) path += `/${id}`;
+                } else {
+                    path += `/${String(params)}`;
+                }
+            }
+
+            return path;
+        };
+    }
+})();
