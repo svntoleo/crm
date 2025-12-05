@@ -33,9 +33,6 @@ class ServiceOrderController extends Controller
                 'create' => route('service_orders.create'),
                 'store' => route('service_orders.store'),
                 'move' => route('service_orders.move'),
-                'show' => fn($id) => route('service_orders.show', $id),
-                'edit' => fn($id) => route('service_orders.edit', $id),
-                'destroy' => fn($id) => route('service_orders.destroy', $id),
             ],
         ]);
     }
@@ -47,7 +44,6 @@ class ServiceOrderController extends Controller
             'urls' => [
                 'store' => route('service_orders.store'),
                 'index' => route('service_orders.index'),
-                'storeItem' => fn($id) => route('service_orders.items.store', $id),
             ],
         ]);
     }
@@ -74,7 +70,6 @@ class ServiceOrderController extends Controller
                 'update' => route('service_orders.update', $serviceOrder),
                 'index' => route('service_orders.index'),
                 'storeItem' => route('service_orders.items.store', $serviceOrder),
-                'destroyItem' => fn($itemId) => route('service_orders.items.destroy', [$serviceOrder->id, $itemId]),
             ],
         ]);
     }

@@ -19,8 +19,6 @@ class ProductCategoryController extends Controller
             'urls' => [
                 'create' => route('product_categories.create'),
                 'store' => route('product_categories.store'),
-                'edit' => fn($id) => route('product_categories.edit', $id),
-                'destroy' => fn($id) => route('product_categories.destroy', $id),
             ],
         ]);
     }

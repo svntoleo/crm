@@ -33,9 +33,6 @@ class QuotationController extends Controller
                 'create' => route('quotations.create'),
                 'store' => route('quotations.store'),
                 'move' => route('quotations.move'),
-                'show' => fn($id) => route('quotations.show', $id),
-                'edit' => fn($id) => route('quotations.edit', $id),
-                'destroy' => fn($id) => route('quotations.destroy', $id),
             ],
         ]);
     }
@@ -47,7 +44,6 @@ class QuotationController extends Controller
             'urls' => [
                 'store' => route('quotations.store'),
                 'index' => route('quotations.index'),
-                'storeItem' => fn($id) => route('quotations.items.store', $id),
             ],
         ]);
     }
@@ -74,7 +70,6 @@ class QuotationController extends Controller
                 'update' => route('quotations.update', $quotation),
                 'index' => route('quotations.index'),
                 'storeItem' => route('quotations.items.store', $quotation),
-                'destroyItem' => fn($itemId) => route('quotations.items.destroy', [$quotation->id, $itemId]),
             ],
         ]);
     }

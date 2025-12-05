@@ -18,8 +18,6 @@ class UserController extends Controller
             'urls' => [
                 'create' => route('users.create'),
                 'store' => route('users.store'),
-                'edit' => fn($id) => route('users.edit', $id),
-                'destroy' => fn($id) => route('users.destroy', $id),
             ],
         ]);
     }
